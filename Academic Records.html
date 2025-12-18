@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Academic Records - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Section Header */
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .action-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .action-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #4285f4;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #1a73e8;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 220px;
+            padding: 10px 14px 10px 38px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            color: #1f2937;
+            background: #ffffff;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        /* Data Table */
+        .table-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #4b5563;
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Action Buttons in Table */
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #4285f4;
+            color: #ffffff;
+        }
+
+        .btn-edit:hover {
+            background: #1a73e8;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        /* Grade Badge */
+        .grade-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .grade-badge.passed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .grade-badge.failed {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .grade-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #ffffff;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .page-btn.active {
+            background: #4285f4;
+            border-color: #4285f4;
+            color: #ffffff;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Student Cell */
+        .student-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-avatar-small {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #e8f0fe 0%, #c2d9ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4285f4;
+            flex-shrink: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Manage Academic Records</h1>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Section Header -->
+            <div class="section-header">
+                <h2 class="section-title">Academic Records Management</h2>
+                <p class="section-subtitle">View, add, edit, and delete student academic records</p>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="action-left">
+                    <button class="btn btn-primary">
+                        <span>+</span> Add Record
+                    </button>
+                    <button class="btn btn-secondary">Export</button>
+                </div>
+                <div class="action-right">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search records...">
+                    </div>
+                    <button class="btn btn-secondary">Filter</button>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Academic Year</label>
+                        <select class="filter-select">
+                            <option value="">Select Academic Year</option>
+                            <option value="2025-2026" selected>2025-2026</option>
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2023-2024">2023-2024</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Semester</label>
+                        <select class="filter-select">
+                            <option value="">Select Semester</option>
+                            <option value="1st">1st Semester</option>
+                            <option value="2nd" selected>2nd Semester</option>
+                            <option value="summer">Summer</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Course</label>
+                        <select class="filter-select">
+                            <option value="">All Courses</option>
+                            <option value="43152" selected>43152 - System Analysis and Design</option>
+                            <option value="43144">43144 - Digital Logic Design</option>
+                            <option value="37328">37328 - Web Development</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Student ID</th>
+                            <th>Course</th>
+                            <th>Prelim</th>
+                            <th>Midterm</th>
+                            <th>Final</th>
+                            <th>GPA</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Record 1 -->
+                        <tr>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar-small">LA</div>
+                                    <span>Levnie Apayor</span>
+                                </div>
+                            </td>
+                            <td>25275001</td>
+                            <td>System Analysis and Design</td>
+                            <td>88</td>
+                            <td>92</td>
+                            <td>94</td>
+                            <td><span class="grade-badge passed">1.25</span></td>
+                            <td><span class="grade-badge passed">Passed</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit">Edit</button>
+                                    <button class="btn-action btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Record 2 -->
+                        <tr>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar-small">EA</div>
+                                    <span>Euwin Ayuso</span>
+                                </div>
+                            </td>
+                            <td>25275002</td>
+                            <td>System Analysis and Design</td>
+                            <td>85</td>
+                            <td>88</td>
+                            <td>87</td>
+                            <td><span class="grade-badge passed">1.50</span></td>
+                            <td><span class="grade-badge passed">Passed</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit">Edit</button>
+                                    <button class="btn-action btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Record 3 -->
+                        <tr>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar-small">DC</div>
+                                    <span>Dominic Cornado</span>
+                                </div>
+                            </td>
+                            <td>25275003</td>
+                            <td>System Analysis and Design</td>
+                            <td>78</td>
+                            <td>80</td>
+                            <td>--</td>
+                            <td><span class="grade-badge pending">--</span></td>
+                            <td><span class="grade-badge pending">Incomplete</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit">Edit</button>
+                                    <button class="btn-action btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Record 4 -->
+                        <tr>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar-small">RI</div>
+                                    <span>Reyvin Inot</span>
+                                </div>
+                            </td>
+                            <td>25275983</td>
+                            <td>System Analysis and Design</td>
+                            <td>92</td>
+                            <td>95</td>
+                            <td>96</td>
+                            <td><span class="grade-badge passed">1.00</span></td>
+                            <td><span class="grade-badge passed">Passed</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit">Edit</button>
+                                    <button class="btn-action btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Record 5 -->
+                        <tr>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar-small">MP</div>
+                                    <span>Melvinz Paglinawan</span>
+                                </div>
+                            </td>
+                            <td>25275005</td>
+                            <td>System Analysis and Design</td>
+                            <td>70</td>
+                            <td>68</td>
+                            <td>62</td>
+                            <td><span class="grade-badge failed">5.00</span></td>
+                            <td><span class="grade-badge failed">Failed</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit">Edit</button>
+                                    <button class="btn-action btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Record 6 -->
+                        <tr>
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar-small">JP</div>
+                                    <span>John Andrei Paling</span>
+                                </div>
+                            </td>
+                            <td>25275006</td>
+                            <td>System Analysis and Design</td>
+                            <td>82</td>
+                            <td>85</td>
+                            <td>88</td>
+                            <td><span class="grade-badge passed">1.75</span></td>
+                            <td><span class="grade-badge passed">Passed</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit">Edit</button>
+                                    <button class="btn-action btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Showing 1-6 of 6 records
+                </div>
+                <div class="pagination">
+                    <button class="page-btn" disabled>‹</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn">›</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

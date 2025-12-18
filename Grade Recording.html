@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Grade Recording - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            color: #4285f4;
+            background: #f8fafc;
+        }
+
+        .nav-tab.active {
+            color: #4285f4;
+            border-bottom-color: #4285f4;
+            background: #f0f7ff;
+        }
+
+        /* Main Container */
+        .container {
+            padding: 24px 30px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            color: #1f2937;
+            background: #ffffff;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .action-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-save {
+            padding: 10px 24px;
+            background: #4285f4;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-save:hover {
+            background: #1a73e8;
+        }
+
+        .btn-save:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .export-link {
+            color: #4285f4;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .export-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Grade Table */
+        .grade-table-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .grade-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .grade-table thead {
+            background: #f8fafc;
+        }
+
+        .grade-table th {
+            padding: 14px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4b5563;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .grade-table th.center {
+            text-align: center;
+        }
+
+        .grade-table td {
+            padding: 14px 12px;
+            font-size: 13px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .grade-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .grade-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Student Info Cell */
+        .student-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 200px;
+        }
+
+        .student-avatar-small {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #e8f0fe 0%, #c2d9ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4285f4;
+            flex-shrink: 0;
+        }
+
+        .student-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .student-id-small {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* Grade Input */
+        .grade-input {
+            width: 60px;
+            padding: 8px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .grade-input:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        .grade-input.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* Grade Progress Bar */
+        .grade-bar-container {
+            width: 100px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .grade-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .grade-bar.excellent {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+
+        .grade-bar.good {
+            background: linear-gradient(90deg, #4285f4, #1a73e8);
+        }
+
+        .grade-bar.average {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .grade-bar.poor {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        /* Final Grade Display */
+        .final-grade {
+            font-weight: 600;
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 50px;
+            display: inline-block;
+        }
+
+        .final-grade.passed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .final-grade.failed {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .final-grade.pending {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-badge.complete {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-badge.incomplete {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.not-started {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Legend */
+        .legend-section {
+            display: flex;
+            gap: 32px;
+            padding: 20px 24px;
+            background: #ffffff;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .legend-color.passed-legend {
+            background: #22c55e;
+        }
+
+        .legend-color.failed-legend {
+            background: #ef4444;
+        }
+
+        .legend-color.pending-legend {
+            background: #9ca3af;
+        }
+
+        .legend-text {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .legend-text span {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* Course Info Badge */
+        .course-info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f7ff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .course-info-badge .course-code {
+            font-weight: 600;
+            color: #4285f4;
+        }
+
+        .course-info-badge .course-name {
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .course-info-badge .separator {
+            color: #d1d5db;
+        }
+
+        .students-count {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .page-header {
+            text-align: center;
+            padding: 24px 0 0 0;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>  
+        <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Process Grade Recording</h1>
+    </div>
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Course</label>
+                    <select class="filter-select">
+                        <option value="">Select Course</option>
+                        <option value="it312" selected>43152 - System Analysis and Design</option>
+                        <option value="it313">IT 313 - Database Management Systems</option>
+                        <option value="it314">IT 314 - Web Development Technologies</option>
+                        <option value="it315">IT 315 - Object-Oriented Programming</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Term</label>
+                    <select class="filter-select">
+                        <option value="">Select Term</option>
+                        <option value="1st">1st Semester</option>
+                        <option value="2nd" selected>2nd Semester</option>
+                        <option value="summer">Summer</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Academic Year</label>
+                    <select class="filter-select">
+                        <option value="">Academic Year</option>
+                        <option value="2025-2026" selected>2025-2026</option>
+                        <option value="2024-2025">2024-2025</option>
+                        <option value="2023-2024">2023-2024</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="action-left">
+                <button class="btn-save">Save Grades</button>
+                <button class="btn-secondary">Calculate GPA</button>
+            </div>
+            <a href="#" class="export-link">📥 Export to Excel</a>
+        </div>
+
+        <!-- Course Info & Student Count -->
+        <div class="course-info-badge">
+            <span class="course-code">43152</span>
+            <span class="separator">|</span>
+            <span class="course-name">System Analysis and Design</span>
+        </div>
+        <p class="students-count">Showing 5 enrolled students</p>
+
+        <!-- Grade Table -->
+        <div class="grade-table-container">
+            <table class="grade-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th class="center">Prelim</th>
+                        <th class="center">Midterm</th>
+                        <th class="center">Pre-Final</th>
+                        <th class="center">Final</th>
+                        <th class="center">Progress</th>
+                        <th class="center">Final Grade</th>
+                        <th class="center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Student 1 -->
+                    <tr>
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar-small">LA</div>
+                                <div>
+                                    <div class="student-name">Levnie Apayor</div>
+                                    <div class="student-id-small">ID: 25275001</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="number" class="grade-input" value="88" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="92" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="90" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="94" min="0" max="100"></td>
+                        <td>
+                            <div class="grade-bar-container">
+                                <div class="grade-bar excellent" style="width: 91%;"></div>
+                            </div>
+                        </td>
+                        <td><span class="final-grade passed">1.25</span></td>
+                        <td><span class="status-badge complete">Complete</span></td>
+                    </tr>
+
+                    <!-- Student 2 -->
+                    <tr>
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar-small">EA</div>
+                                <div>
+                                    <div class="student-name">Euwin Ayuso</div>
+                                    <div class="student-id-small">ID: 25275002</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="number" class="grade-input" value="85" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="88" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="82" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="87" min="0" max="100"></td>
+                        <td>
+                            <div class="grade-bar-container">
+                                <div class="grade-bar good" style="width: 85%;"></div>
+                            </div>
+                        </td>
+                        <td><span class="final-grade passed">1.50</span></td>
+                        <td><span class="status-badge complete">Complete</span></td>
+                    </tr>
+
+                    <!-- Student 3 -->
+                    <tr>
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar-small">DC</div>
+                                <div>
+                                    <div class="student-name">Dominic Cornado</div>
+                                    <div class="student-id-small">ID: 25275003</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="number" class="grade-input" value="78" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="80" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="75" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="" placeholder="--" min="0" max="100"></td>
+                        <td>
+                            <div class="grade-bar-container">
+                                <div class="grade-bar good" style="width: 78%;"></div>
+                            </div>
+                        </td>
+                        <td><span class="final-grade pending">--</span></td>
+                        <td><span class="status-badge incomplete">Incomplete</span></td>
+                    </tr>
+
+                    <!-- Student 4 -->
+                    <tr>
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar-small">RI</div>
+                                <div>
+                                    <div class="student-name">Reyvin Inot</div>
+                                    <div class="student-id-small">ID: 25275983</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="number" class="grade-input" value="92" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="95" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="93" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="96" min="0" max="100"></td>
+                        <td>
+                            <div class="grade-bar-container">
+                                <div class="grade-bar excellent" style="width: 94%;"></div>
+                            </div>
+                        </td>
+                        <td><span class="final-grade passed">1.00</span></td>
+                        <td><span class="status-badge complete">Complete</span></td>
+                    </tr>
+
+                    <!-- Student 5 -->
+                    <tr>
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar-small">MP</div>
+                                <div>
+                                    <div class="student-name">Melvinz Paglinawan</div>
+                                    <div class="student-id-small">ID: 25275005</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="number" class="grade-input" value="70" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="68" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="65" min="0" max="100"></td>
+                        <td><input type="number" class="grade-input" value="62" min="0" max="100"></td>
+                        <td>
+                            <div class="grade-bar-container">
+                                <div class="grade-bar average" style="width: 66%;"></div>
+                            </div>
+                        </td>
+                        <td><span class="final-grade failed">5.00</span></td>
+                        <td><span class="status-badge complete">Complete</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend-section">
+            <div class="legend-item">
+                <div class="legend-color pending-legend"></div>
+                <div class="legend-text">
+                    <span>Pending</span> - Grades not yet complete
+                </div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color passed-legend"></div>
+                <div class="legend-text">
+                    <span>Passed</span> - Final grade of 3.0 or higher
+                </div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color failed-legend"></div>
+                <div class="legend-text">
+                    <span>Failed</span> - Final grade below 3.0
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

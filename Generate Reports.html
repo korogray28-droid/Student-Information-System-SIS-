@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Reports - Student Information System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 16px;
+            background: #4285f4;
+            border-radius: 2px;
+        }
+
+        /* Report Type Cards */
+        .report-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .report-type-card {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .report-type-card:hover {
+            border-color: #4285f4;
+            background: #f8fafc;
+        }
+
+        .report-type-card.active {
+            border-color: #4285f4;
+            background: #f0f7ff;
+        }
+
+        .report-type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .report-type-card.active .report-type-icon {
+            background: #4285f4;
+            color: #ffffff;
+        }
+
+        .report-type-card:not(.active) .report-type-icon {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .report-type-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .report-type-info p {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .filter-select,
+        .filter-input {
+            padding: 10px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            color: #1f2937;
+            background: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .filter-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        /* Preview Section */
+        .preview-section {
+            margin-bottom: 24px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .preview-action-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .preview-action-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .preview-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 24px;
+            background: #ffffff;
+            min-height: 400px;
+        }
+
+        /* Report Preview Content */
+        .report-preview {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .report-logo {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .report-institution {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .report-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4285f4;
+            margin-bottom: 4px;
+        }
+
+        .report-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .report-body {
+            margin-bottom: 24px;
+        }
+
+        .report-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 13px;
+        }
+
+        .report-row:last-child {
+            border-bottom: none;
+        }
+
+        .report-label {
+            width: 140px;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .report-value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 12px;
+        }
+
+        .report-table th {
+            background: #f8fafc;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .report-table td {
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+        }
+
+        .report-footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* Export Options */
+        .export-section {
+            margin-bottom: 20px;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .export-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4285f4;
+            cursor: pointer;
+        }
+
+        .export-option label {
+            font-size: 13px;
+            color: #4b5563;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .export-icon {
+            font-size: 16px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #4285f4;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #1a73e8;
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .report-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .report-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Generate Reports</h1>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Report Type Selection -->
+            <h3 class="section-title">Select Report Type</h3>
+            <div class="report-types">
+                <div class="report-type-card active">
+                    <div class="report-type-icon">📊</div>
+                    <div class="report-type-info">
+                        <h4>Grade Report</h4>
+                        <p>Student grades summary</p>
+                    </div>
+                </div>
+                <div class="report-type-card">
+                    <div class="report-type-icon">📋</div>
+                    <div class="report-type-info">
+                        <h4>Attendance Report</h4>
+                        <p>Attendance records</p>
+                    </div>
+                </div>
+                <div class="report-type-card">
+                    <div class="report-type-icon">📝</div>
+                    <div class="report-type-info">
+                        <h4>Enrollment Report</h4>
+                        <p>Enrollment statistics</p>
+                    </div>
+                </div>
+                <div class="report-type-card">
+                    <div class="report-type-icon">👥</div>
+                    <div class="report-type-info">
+                        <h4>Class List</h4>
+                        <p>Students per class</p>
+                    </div>
+                </div>
+                <div class="report-type-card">
+                    <div class="report-type-icon">📈</div>
+                    <div class="report-type-info">
+                        <h4>Performance Report</h4>
+                        <p>Academic performance</p>
+                    </div>
+                </div>
+                <div class="report-type-card">
+                    <div class="report-type-icon">📄</div>
+                    <div class="report-type-info">
+                        <h4>Transcript</h4>
+                        <p>Official records</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <h3 class="section-title">Report Filters</h3>
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Academic Year</label>
+                        <select class="filter-select">
+                            <option value="">Select Academic Year</option>
+                            <option value="2025-2026" selected>2025-2026</option>
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2023-2024">2023-2024</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Semester</label>
+                        <select class="filter-select">
+                            <option value="">Select Semester</option>
+                            <option value="1st">1st Semester</option>
+                            <option value="2nd" selected>2nd Semester</option>
+                            <option value="summer">Summer</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Course</label>
+                        <select class="filter-select">
+                            <option value="">All Courses</option>
+                            <option value="43152" selected>43152 - System Analysis and Design</option>
+                            <option value="43144">43144 - Digital Logic Design</option>
+                            <option value="37328">37328 - Web Development</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Student</label>
+                        <select class="filter-select">
+                            <option value="">All Students</option>
+                            <option value="25275001"selected >Levnie Apayor</option>
+                            <option value="25275002">Euwin Ayuso</option>
+                            <option value="25275003">Dominic Cornado</option>
+                            <option value="25275983" >Reyvin Inot</option>
+                            <option value="25275005">Melvinz Paglinawan</option>
+                            <option value="25275006">John Andrei Paling</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <div class="preview-header">
+                    <h3 class="section-title">Report Preview</h3>
+                    <div class="preview-actions">
+                        <button class="preview-action-btn" title="Print">🖨️</button>
+                        <button class="preview-action-btn" title="Fullscreen">⛶</button>
+                    </div>
+                </div>
+                <div class="preview-container">
+                    <div class="report-preview">
+                        <!-- Report Header -->
+                        <div class="report-header">
+                            <div class="report-logo">🎓</div>
+                            <div class="report-institution">University of Cebu Lapu-Lapu and Mandaue</div>
+                            <div class="report-title">STUDENT GRADE REPORT</div>
+                            <div class="report-subtitle">Academic Year 2025-2026 • 2nd Semester</div>
+                        </div>
+
+                        <!-- Student Info -->
+                        <div class="report-body">
+                            <div class="report-row">
+                                <span class="report-label">Student Name:</span>
+                                <span class="report-value">Levnie Apayor</span>
+                            </div>
+                            <div class="report-row">
+                                <span class="report-label">Student ID:</span>
+                                <span class="report-value">25275001</span>
+                            </div>
+                            <div class="report-row">
+                                <span class="report-label">Program:</span>
+                                <span class="report-value">BS Information Technology</span>
+                            </div>
+                            <div class="report-row">
+                                <span class="report-label">Year Level:</span>
+                                <span class="report-value">2nd Year</span>
+                            </div>
+
+                            <!-- Grades Table -->
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Title</th>
+                                        <th>Units</th>
+                                        <th>Grade</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>43152</td>
+                                        <td>System Analysis and Design</td>
+                                        <td>3</td>
+                                        <td>1.25</td>
+                                        <td>Passed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>43144</td>
+                                        <td>Digital Logic Design</td>
+                                        <td>2</td>
+                                        <td>1.25</td>
+                                        <td>Passed</td>
+                                    </tr>
+                                    <tr>
+                                        <td>37328</td>
+                                        <td>Web Development</td>
+                                        <td>1</td>
+                                        <td>1.50</td>
+                                        <td>Passed</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Report Footer -->
+                        <div class="report-footer">
+                            <span>Generated: December 13, 2025</span>
+                            <span>Page 1 of 1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="export-section">
+                <h3 class="section-title">Export Format</h3>
+                <div class="export-options">
+                    <div class="export-option">
+                        <input type="checkbox" id="export-pdf" checked>
+                        <label for="export-pdf">
+                            <span class="export-icon">📕</span> PDF
+                        </label>
+                    </div>
+                    <div class="export-option">
+                        <input type="checkbox" id="export-excel">
+                        <label for="export-excel">
+                            <span class="export-icon">📗</span> Excel
+                        </label>
+                    </div>
+                    <div class="export-option">
+                        <input type="checkbox" id="export-word">
+                        <label for="export-word">
+                            <span class="export-icon">📘</span> Word
+                        </label>
+                    </div>
+                    <div class="export-option">
+                        <input type="checkbox" id="export-csv">
+                        <label for="export-csv">
+                            <span class="export-icon">📄</span> CSV
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary">Generate Report</button>
+                <button class="btn btn-success">Download</button>
+                <button class="btn btn-secondary">Reset</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
